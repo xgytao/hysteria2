@@ -272,11 +272,11 @@ EOF
     fi
 
     # 给 IPv6 地址加中括号
-    if [[ -n $(echo $ip | grep ":") ]]; then
-        last_ip="$ip"
-    else
-        last_ip=$ip
-    fi
+    #if [[ -n $(echo $ip | grep ":") ]]; then
+    #    last_ip="[$ip]"
+    #else
+    #    last_ip=$ip
+    #fi
 
     mkdir /root/hy
     cat << EOF > /root/hy/hy-client.yaml
@@ -492,11 +492,10 @@ changeconf(){
 }
 
 showconf(){
-    yellow "Hysteria 2 客户端 YAML 配置文件 hy-client.yaml 内容如下，并保存到 /root/hy/hy-client.yaml"
-    red "$(cat /root/hy/hy-client.yaml)"
-    yellow "Hysteria 2 客户端 JSON 配置文件 hy-client.json 内容如下，并保存到 /root/hy/hy-client.json"
-    red "$(cat /root/hy/hy-client.json)"
     yellow "Clash Meta 客户端配置文件已保存到 /root/hy/clash-meta.yaml"
+    red "$(cat /root/hy/clash-meta.yaml)"
+    yellow "Hysteria 2 客户端 YAML 配置文件 hy-client.yaml 内容如下，并保存到 /root/hy/hy-client.yaml"
+    yellow "Hysteria 2 客户端 JSON 配置文件 hy-client.json 内容如下，并保存到 /root/hy/hy-client.json"
     yellow "Hysteria 2 节点分享链接如下，并保存到 /root/hy/url.txt"
     red "$(cat /root/hy/url.txt)"
     yellow "Hysteria 2 节点单端口的分享链接如下，并保存到 /root/hy/url.txt"
