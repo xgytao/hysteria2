@@ -273,7 +273,7 @@ EOF
 
     # 给 IPv6 地址加中括号
     if [[ -n $(echo $ip | grep ":") ]]; then
-        last_ip="[$ip]"
+        last_ip="$ip"
     else
         last_ip=$ip
     fi
