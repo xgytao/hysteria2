@@ -272,11 +272,11 @@ EOF
     fi
 
     # 给 IPv6 地址加中括号
-    #if [[ -n $(echo $ip | grep ":") ]]; then
-    #    last_ip="[$ip]"
-    #else
-    #    last_ip=$ip
-    #fi
+    if [[ -n $(echo $ip | grep ":") ]]; then
+        last_ip="$ip"
+    else
+        last_ip=$ip
+    fi
 
     mkdir /root/hy
     cat << EOF > /root/hy/hy-client.yaml
