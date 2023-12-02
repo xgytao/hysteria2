@@ -329,6 +329,18 @@ EOF
 }
 EOF
     cat <<EOF > /root/hy/clash-meta.yaml
+prot: 7890
+mode: rule
+ipv6: true
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  listen: 0.0.0.0:53
+  enhanced-mode: fake-ip
+  nameserver:
+    - 8.8.8.8
+    - 1.1.1.1
+    - 114.114.114.114
 proxies:
 - name: Hysteria2 
   type: hysteria2
@@ -337,7 +349,9 @@ proxies:
   password: $auth_pwd
   sni: $hy_domain
   skip-cert-verify: true
-
+rules:
+  - GEOIP,CN,DIRECT
+  - MATCH,Proxy
 EOF
     url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
     echo $url > /root/hy/url.txt
