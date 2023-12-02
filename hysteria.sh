@@ -329,10 +329,12 @@ EOF
 }
 EOF
     cat <<EOF > /root/hy/clash-meta.yaml
-prot: 7890
-mode: rule
-ipv6: true
+mixed-port: 7890
 external-controller: 127.0.0.1:9090
+allow-lan: false
+mode: rule
+log-level: debug
+ipv6: true
 dns:
   enable: true
   listen: 0.0.0.0:53
@@ -342,13 +344,19 @@ dns:
     - 1.1.1.1
     - 114.114.114.114
 proxies:
-- name: Hysteria2 
-  type: hysteria2
-  server: $last_ip
-  port: $port
-  password: $auth_pwd
-  sni: $hy_domain
-  skip-cert-verify: true
+  - name: Hysteria2 
+    type: hysteria2
+    server: $last_ip
+    port: $port
+    password: $auth_pwd
+    sni: $hy_domain
+    skip-cert-verify: true
+proxy-groups:
+  - name: Proxy
+    type: select
+    proxies:
+      - Hysteria2 
+      
 rules:
   - GEOIP,CN,DIRECT
   - MATCH,Proxy
