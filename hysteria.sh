@@ -329,37 +329,15 @@ EOF
 }
 EOF
     cat <<EOF > /root/hy/clash-meta.yaml
-mixed-port: 7890
-external-controller: 127.0.0.1:9090
-allow-lan: false
-mode: rule
-log-level: debug
-ipv6: true
-dns:
-  enable: true
-  listen: 0.0.0.0:53
-  enhanced-mode: fake-ip
-  nameserver:
-    - 8.8.8.8
-    - 1.1.1.1
-    - 114.114.114.114
 proxies:
-  - name: Hysteria2 
-    type: hysteria2
-    server: $last_ip
-    port: $port
-    password: $auth_pwd
-    sni: $hy_domain
-    skip-cert-verify: true
-proxy-groups:
-  - name: Proxy
-    type: select
-    proxies:
-      - Hysteria2
-      
-rules:
-  - GEOIP,CN,DIRECT
-  - MATCH,Proxy
+- name: Hysteria2 
+  type: hysteria2
+  server: $last_ip
+  port: $port
+  password: $auth_pwd
+  sni: $hy_domain
+  skip-cert-verify: true
+
 EOF
     url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
     echo $url > /root/hy/url.txt
@@ -376,7 +354,7 @@ EOF
     fi
     red "======================================================================================"
     green "Hysteria 2 代理服务安装完成"
-    yellow "Clash Meta 客户端配置文件已保存到 /root/hy/clash-meta.yaml"
+    yellow "Clash Meta 客户端代理集文件已保存到 /root/hy/clash-meta.yaml"
     red "$(cat /root/hy/clash-meta.yaml)"
     yellow "Hysteria 2 客户端 YAML 配置文件 hy-client.yaml 内容如下，并保存到 /root/hy/hy-client.yaml"
     yellow "Hysteria 2 客户端 JSON 配置文件 hy-client.json 内容如下，并保存到 /root/hy/hy-client.json"
