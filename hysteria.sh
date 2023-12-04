@@ -274,9 +274,7 @@ EOF
 
     # 给 IPv6 地址加中括号
     if [[ -n $(echo $ip | grep ":") ]]; then
-        last_ip="[$ip]"
-    else
-        last_ip=$ip
+        last_ip="$ip"
     fi
 
     # 判断证书是否为必应自签，如是则使用 IP 作为节点入站
@@ -318,22 +316,8 @@ EOF
 EOF
 
     cat <<EOF > /root/hy/clash-meta.yaml
-mixed-port: 7890
-external-controller: 127.0.0.1:9090
-allow-lan: false
-mode: rule
-log-level: debug
-ipv6: true
-dns:
-  enable: true
-  listen: 0.0.0.0:53
-  enhanced-mode: fake-ip
-  nameserver:
-    - 8.8.8.8
-    - 1.1.1.1
-    - 114.114.114.114
 proxies:
-  - name: Misaka-Hysteria
+  - name: Hysteria
     type: hysteria
     server: $hy_ym
     port: $port
@@ -345,15 +329,6 @@ proxies:
     down: 100
     sni: $domain
     skip-cert-verify: true
-proxy-groups:
-  - name: Proxy
-    type: select
-    proxies:
-      - Misaka-Hysteria
-      
-rules:
-  - GEOIP,CN,DIRECT
-  - MATCH,Proxy
 EOF
     url="hysteria://$hy_ym:$port?protocol=$protocol&auth=$auth_pwd&peer=$domain&insecure=$true&upmbps=20&downmbps=100&alpn=h3#Misaka-Hysteria"
     echo $url > /root/hy/url.txt
