@@ -678,8 +678,8 @@ After=network.target
 Type=simple
 ExecStart=$EXECUTABLE_INSTALL_PATH server --config ${CONFIG_DIR}/${_config_name}.yaml
 WorkingDirectory=~
-User=$HYSTERIA_USER
-Group=$HYSTERIA_USER
+User=root
+Group=root
 Environment=HYSTERIA_LOG_LEVEL=info
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
