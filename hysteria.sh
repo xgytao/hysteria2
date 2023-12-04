@@ -64,7 +64,7 @@ inst_cert(){
         cert_path="/root/cert/cert.crt"
         key_path="/root/cert/rivate.key"
 
-        chmod -R 777 /root/cert # 让 Hysteria 主程序访问到 /root 目录
+        chmod -R 644 /root/cert # 让 Hysteria 主程序访问到 /root 目录
 
         if [[ -f /root/cert/cert.crt && -f /root/cert/private.key ]] && [[ -s /root/cert/cert.crt && -s /root/cert/private.key ]] && [[ -f /root/cert/ca.log ]]; then
             domain=$(cat /root/cert/ca.log)
@@ -452,6 +452,8 @@ change_cert(){
     inst_cert
 
     sed -i "s!$old_cert!$cert_path!g" /etc/hysteria/clash-meta.yaml
+    sed -i "s!$old_key!$key_path!g" /etc/hysteria/clash-meta.yaml
+    sed -i "6s/$old_hydomain/$hy_domain/g" /root/hy/clash-meta.yaml
     sed -i "s!$old_cert!$cert_path!g" /etc/hysteria/config.yaml
     sed -i "s!$old_key!$key_path!g" /etc/hysteria/config.yaml
     sed -i "6s/$old_hydomain/$hy_domain/g" /root/hy/hy-client.yaml
