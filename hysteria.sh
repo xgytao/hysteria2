@@ -61,24 +61,24 @@ inst_cert(){
     echo ""
     read -rp "请输入选项 [1-3]: " certInput
     if [[ $certInput == 2 ]]; then
-        cert_path="/root/cert.crt"
-        key_path="/root/private.key"
+        cert_path="/root/cert/cert.crt"
+        key_path="/root/cert/rivate.key"
 
-        chmod -R 777 /root # 让 Hysteria 主程序访问到 /root 目录
+        chmod -R 777 /root/cert # 让 Hysteria 主程序访问到 /root 目录
 
-        if [[ -f /root/cert.crt && -f /root/private.key ]] && [[ -s /root/cert.crt && -s /root/private.key ]] && [[ -f /root/ca.log ]]; then
-            domain=$(cat /root/ca.log)
+        if [[ -f /root/cert/cert.crt && -f /root/cert/private.key ]] && [[ -s /root/cert/cert.crt && -s /root/cert/private.key ]] && [[ -f /root/cert/ca.log ]]; then
+            domain=$(cat /root/cert/ca.log)
             green "检测到原有域名：$domain 的证书，正在应用"
             hy_domain=$domain
         else
             WARPv4Status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
             WARPv6Status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
             if [[ $WARPv4Status =~ on|plus ]] || [[ $WARPv6Status =~ on|plus ]]; then
-                wg-quick down wgcf >/dev/null 2>&1
-                systemctl stop warp-go >/dev/null 2>&1
+                wg-quick down wgcf 
+                systemctl stop warp-go 
                 realip
-                wg-quick up wgcf >/dev/null 2>&1
-                systemctl start warp-go >/dev/null 2>&1
+                wg-quick up wgcf 
+                systemctl start warp-go 
             else
                 realip
             fi
@@ -107,14 +107,14 @@ inst_cert(){
                 else
                     bash ~/.acme.sh/acme.sh --issue -d ${domain} --standalone -k ec-256 --insecure
                 fi
-                bash ~/.acme.sh/acme.sh --install-cert -d ${domain} --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
-                if [[ -f /root/cert.crt && -f /root/private.key ]] && [[ -s /root/cert.crt && -s /root/private.key ]]; then
-                    echo $domain > /root/ca.log
-                    sed -i '/--cron/d' /etc/crontab >/dev/null 2>&1
-                    echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontab
-                    green "证书申请成功! 脚本申请到的证书 (cert.crt) 和私钥 (private.key) 文件已保存到 /root 文件夹下"
-                    yellow "证书crt文件路径如下: /root/cert.crt"
-                    yellow "私钥key文件路径如下: /root/private.key"
+                bash ~/.acme.sh/acme.sh --install-cert -d ${domain} --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
+                if [[ -f /root/cert/cert.crt && -f /root/cert/private.key ]] && [[ -s /root/cert/cert.crt && -s /root/cert/private.key ]]; then
+                    echo $domain > /root/cert/ca.log
+                    sed -i '/--cron/d' /etc/crontab 
+                    echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f " >> /etc/crontab
+                    green "证书申请成功! 脚本申请到的证书 (cert.crt) 和私钥 (private.key) 文件已保存到 /root/cert 文件夹下"
+                    yellow "证书crt文件路径如下: /root/cert/cert.crt"
+                    yellow "私钥key文件路径如下: /root/cert/private.key"
                     hy_domain=$domain
                 fi
             else
@@ -149,7 +149,7 @@ inst_cert(){
 }
 
 inst_port(){
-    iptables -t nat -F PREROUTING >/dev/null 2>&1
+    iptables -t nat -F PREROUTING 
 
     read -p "设置 Hysteria 2 端口 [1-65535]（回车则随机分配端口）：" port
     [[ -z $port ]] && port=$(shuf -i 2000-65535 -n 1)
@@ -186,7 +186,7 @@ inst_jump(){
         fi
         iptables -t nat -A PREROUTING -p udp --dport $firstport:$endport  -j DNAT --to-destination :$port
         ip6tables -t nat -A PREROUTING -p udp --dport $firstport:$endport  -j DNAT --to-destination :$port
-        netfilter-persistent save >/dev/null 2>&1
+        netfilter-persistent save 
     else
         red "将继续使用单端口模式"
     fi
@@ -208,11 +208,11 @@ insthysteria(){
     warpv6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
     warpv4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
     if [[ $warpv4 =~ on|plus || $warpv6 =~ on|plus ]]; then
-        wg-quick down wgcf >/dev/null 2>&1
-        systemctl stop warp-go >/dev/null 2>&1
+        wg-quick down wgcf 
+        systemctl stop warp-go 
         realip
-        systemctl start warp-go >/dev/null 2>&1
-        wg-quick up wgcf >/dev/null 2>&1
+        systemctl start warp-go 
+        wg-quick up wgcf 
     else
         realip
     fi
@@ -338,9 +338,9 @@ proxies:
   sni: $hy_domain
   skip-cert-verify: true
 EOF
-    url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
+    url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Hysteria2"
     echo $url > /root/hy/url.txt
-    nohopurl="hysteria2://$auth_pwd@$last_ip:$port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
+    nohopurl="hysteria2://$auth_pwd@$last_ip:$port/?insecure=1&sni=$hy_domain#Hysteria2"
     echo $nohopurl > /root/hy/url-nohop.txt
 
     systemctl daemon-reload
@@ -364,24 +364,24 @@ EOF
 }
 
 unsthysteria(){
-    systemctl stop hysteria-server.service >/dev/null 2>&1
-    systemctl disable hysteria-server.service >/dev/null 2>&1
+    systemctl stop hysteria-server.service 
+    systemctl disable hysteria-server.service 
     rm -f /lib/systemd/system/hysteria-server.service /lib/systemd/system/hysteria-server@.service
     rm -rf /usr/local/bin/hysteria /etc/hysteria /root/hy /root/hysteria.sh
-    iptables -t nat -F PREROUTING >/dev/null 2>&1
-    netfilter-persistent save >/dev/null 2>&1
+    iptables -t nat -F PREROUTING 
+    netfilter-persistent save 
 
     green "Hysteria 2 已彻底卸载完成！"
 }
 
 starthysteria(){
     systemctl start hysteria-server
-    systemctl enable hysteria-server >/dev/null 2>&1
+    systemctl enable hysteria-server 
 }
 
 stophysteria(){
     systemctl stop hysteria-server
-    systemctl disable hysteria-server >/dev/null 2>&1
+    systemctl disable hysteria-server 
 }
 
 hysteriaswitch(){
