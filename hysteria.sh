@@ -141,8 +141,8 @@ inst_cert(){
         key_path="/etc/hysteria/private.key"
         openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key
         openssl req -new -x509 -days 36500 -key /etc/hysteria/private.key -out /etc/hysteria/cert.crt -subj "/CN=www.bing.com"
-        chmod 777 /etc/hysteria/cert.crt
-        chmod 777 /etc/hysteria/private.key
+        chmod 644 /etc/hysteria/cert.crt
+        chmod 644 /etc/hysteria/private.key
         hy_domain="www.bing.com"
         domain="www.bing.com"
     fi
@@ -414,6 +414,7 @@ changeport(){
         fi
     done
 
+    sed -i "1s#$oldport#$port#g" /etc/hysteria/clash-meta.yaml
     sed -i "1s#$oldport#$port#g" /etc/hysteria/config.yaml
     sed -i "1s#$oldport#$port#g" /root/hy/hy-client.yaml
     sed -i "2s#$oldport#$port#g" /root/hy/hy-client.json
@@ -431,6 +432,7 @@ changepasswd(){
     read -p "设置 Hysteria 2 密码（回车跳过为随机字符）：" passwd
     [[ -z $passwd ]] && passwd=$(date +%s%N | md5sum | cut -c 1-8)
 
+    sed -i "1s#$oldpasswd#$passwd#g" /etc/hysteria/clash-meta.yaml
     sed -i "1s#$oldpasswd#$passwd#g" /etc/hysteria/config.yaml
     sed -i "1s#$oldpasswd#$passwd#g" /root/hy/hy-client.yaml
     sed -i "3s#$oldpasswd#$passwd#g" /root/hy/hy-client.json
@@ -449,6 +451,7 @@ change_cert(){
 
     inst_cert
 
+    sed -i "s!$old_cert!$cert_path!g" /etc/hysteria/clash-meta.yaml
     sed -i "s!$old_cert!$cert_path!g" /etc/hysteria/config.yaml
     sed -i "s!$old_key!$key_path!g" /etc/hysteria/config.yaml
     sed -i "6s/$old_hydomain/$hy_domain/g" /root/hy/hy-client.yaml
