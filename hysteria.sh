@@ -317,18 +317,18 @@ EOF
 
     cat <<EOF > /root/hy/clash-meta.yaml
 proxies:
-  - name: Hysteria
-    type: hysteria
-    server: $hy_ym
-    port: $port
-    auth_str: $auth_pwd
-    alpn:
-      - h3
-    protocol: $protocol
-    up: 20
-    down: 100
-    sni: $domain
-    skip-cert-verify: true
+- name: Hysteria
+  type: hysteria
+  server: $hy_ym
+  port: $port
+  auth_str: $auth_pwd
+  alpn:
+    - h3
+  protocol: $protocol
+  up: 20
+  down: 100
+  sni: $domain
+  skip-cert-verify: true
 EOF
     url="hysteria://$hy_ym:$port?protocol=$protocol&auth=$auth_pwd&peer=$domain&insecure=$true&upmbps=20&downmbps=100&alpn=h3#Misaka-Hysteria"
     echo $url > /root/hy/url.txt
