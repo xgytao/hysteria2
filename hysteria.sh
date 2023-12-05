@@ -426,7 +426,7 @@ EOF
 
     # 给 IPv6 地址加中括号
     if [[ -n $(echo $ip | grep ":") ]]; then
-        last_ip="[$ip]"
+        last_ip="$ip"
     else
         last_ip=$ip
     fi
@@ -480,8 +480,24 @@ EOF
   }
 }
 EOF
+   cat << EOF > /root/hy/clash-meta.yaml
+proxies:
+- name: Misaka-Hysteria1
+  type: hysteria
+  server: $hy_domain
+  port: $last_port
+  auth_str: $auth_pwd
+  alpn:
+    - h3
+  protocol: $protocol
+  up: 20
+  down: 100
+  sni: $domain
+  skip-cert-verify: true
 
-    url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
+EOF
+
+ url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Misaka-Hysteria2"
     echo $url > /root/hy/url.txt
 
     systemctl daemon-reload
