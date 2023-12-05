@@ -419,7 +419,7 @@ changeport(){
     sed -i "1s#$oldport#$port#g" /etc/hysteria/config.yaml
     sed -i "1s#$oldport#$port#g" /root/hy/hy-client.yaml
     sed -i "2s#$oldport#$port#g" /root/hy/hy-client.json
-    sed -i "4s#$oldport#$port#g" /root/hy/clash-meta.yaml
+    sed -i "5s#$oldport#$port#g" /root/hy/clash-meta.yaml
 
     stophysteria && starthysteria
 
@@ -437,7 +437,7 @@ changepasswd(){
     sed -i "1s#$oldpasswd#$passwd#g" /etc/hysteria/config.yaml
     sed -i "1s#$oldpasswd#$passwd#g" /root/hy/hy-client.yaml
     sed -i "3s#$oldpasswd#$passwd#g" /root/hy/hy-client.json
-    sed -i "5s#$oldpasswd#$passwd#g" /etc/hysteria/clash-meta.yaml
+    sed -i "6s#$oldpasswd#$passwd#g" /etc/hysteria/clash-meta.yaml
 
     stophysteria && starthysteria
 
@@ -457,6 +457,7 @@ change_cert(){
     sed -i "s!$old_key!$key_path!g" /etc/hysteria/config.yaml
     sed -i "6s/$old_hydomain/$hy_domain/g" /root/hy/hy-client.yaml
     sed -i "5s/$old_hydomain/$hy_domain/g" /root/hy/hy-client.json
+    sed -i "7s/$old_hydomain/$hy_domain/g" /root/hy/clash-meta.yaml
 
     stophysteria && starthysteria
 
