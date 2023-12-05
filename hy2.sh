@@ -336,7 +336,7 @@ proxies:
   port: $port
   password: $auth_pwd
   sni: $hy_domain
-  skip-cert-verify: true
+  skip-cert-verify: false
 EOF
     url="hysteria2://$auth_pwd@$last_ip:$last_port/?insecure=1&sni=$hy_domain#Hysteria2"
     echo $url > /root/hy/url.txt
