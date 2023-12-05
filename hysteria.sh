@@ -480,7 +480,7 @@ EOF
   }
 }
 EOF
-   cat << EOF > /root/hy/clash-meta.yaml
+    cat << EOF > /root/hy/clash-meta.yaml
 proxies:
 - name: Misaka-Hysteria1
   type: hysteria
